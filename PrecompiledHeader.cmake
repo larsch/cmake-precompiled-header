@@ -1,4 +1,4 @@
-# Macro for setting up precompiled headers. Usage:
+# Function for setting up precompiled headers. Usage:
 #
 #   add_precompiled_header(target header.h [FORCEINCLUDE])
 #
@@ -33,7 +33,7 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-MACRO(ADD_PRECOMPILED_HEADER _targetName _input)
+FUNCTION(ADD_PRECOMPILED_HEADER _targetName _input)
   GET_FILENAME_COMPONENT(_inputWe ${_input} NAME_WE)
   SET(pch_source ${_inputWe}.cpp)
   FOREACH(arg ${ARGN})
@@ -96,4 +96,4 @@ MACRO(ADD_PRECOMPILED_HEADER _targetName _input)
     ADD_DEPENDENCIES(${_targetName} ${_targetName}_gch)
     SET_TARGET_PROPERTIES(${_targetName} PROPERTIES COMPILE_FLAGS "-include ${_name} -Winvalid-pch")
   ENDIF(CMAKE_COMPILER_IS_GNUCXX)
-ENDMACRO()
+ENDFUNCTION()
