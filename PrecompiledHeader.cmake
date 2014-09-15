@@ -87,7 +87,6 @@ FUNCTION(ADD_PRECOMPILED_HEADER _targetName _input)
     LIST(APPEND _compiler_FLAGS ${_directory_flags})
 
     SEPARATE_ARGUMENTS(_compiler_FLAGS)
-    MESSAGE("${CMAKE_CXX_COMPILER} -DPCHCOMPILE ${_compiler_FLAGS} -x c++-header -o {_output} ${_source}")
     ADD_CUSTOM_COMMAND(
       OUTPUT ${_output}
       COMMAND ${CMAKE_CXX_COMPILER} ${_compiler_FLAGS} -x c++-header -o ${_output} ${_source}
