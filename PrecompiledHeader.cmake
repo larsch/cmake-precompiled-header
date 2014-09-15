@@ -68,7 +68,9 @@ FUNCTION(ADD_PRECOMPILED_HEADER _targetName _input)
   IF(CMAKE_COMPILER_IS_GNUCXX)
     GET_FILENAME_COMPONENT(_name ${_input} NAME)
     SET(_source "${CMAKE_CURRENT_SOURCE_DIR}/${_input}")
-    SET(_outdir "${CMAKE_CURRENT_BINARY_DIR}/${_name}.gch")
+    set(_pchpath "${CMAKE_CURRENT_BINARY_DIR}/${_targetName}_pchfile")
+    SET(_pchfile "${_pchpath}/${_input}")
+    SET(_outdir "${CMAKE_CURRENT_BINARY_DIR}/${_targetName}_pch/${_name}.gch")
     MAKE_DIRECTORY(${_outdir})
     SET(_output "${_outdir}/.c++")
 
@@ -85,11 +87,26 @@ FUNCTION(ADD_PRECOMPILED_HEADER _targetName _input)
 
     SEPARATE_ARGUMENTS(_compiler_FLAGS)
     ADD_CUSTOM_COMMAND(
-      OUTPUT ${_output}
-      COMMAND ${CMAKE_CXX_COMPILER} ${_compiler_FLAGS} -x c++-header -o ${_output} ${_source}
-      DEPENDS ${_source} )
+      OUTPUT "${_pchfile}"
+      COMMAND "${CMAKE_COMMAND}" -E copy_if_different "${_source}" "${_pchfile}"
+      DEPENDS "${_source}"
+      COMMENT "Updating ${_name}"
+      )
+    ADD_CUSTOM_COMMAND(
+      OUTPUT "${_output}"
+      COMMAND "${CMAKE_CXX_COMPILER}" ${_compiler_FLAGS} -x c++-header -o "${_output}" "${_pchfile}"
+      DEPENDS "${_pchfile}"
+      COMMENT "Precompiling ${_name}"
+      )
+    message("_source ${_source}")
+    message("_pchfile ${_pchfile}")
+    message("_output ${_output}")
     ADD_CUSTOM_TARGET(${_targetName}_gch DEPENDS ${_output})
     ADD_DEPENDENCIES(${_targetName} ${_targetName}_gch)
-    SET_TARGET_PROPERTIES(${_targetName} PROPERTIES COMPILE_FLAGS "-include ${_name} -Winvalid-pch")
+    IF(_PCH_FORCEINCLUDE)
+      SET_TARGET_PROPERTIES("${_targetName}" PROPERTIES COMPILE_FLAGS "-include ${_pchfile} -Winvalid-pch")
+    ELSE(_PCH_FORCEINCLUDE)
+      SET_TARGET_PROPERTIES("${_targetName}" PROPERTIES COMPILE_FLAGS "-I${_pchpath} -Winvalid-pch")
+    ENDIF(_PCH_FORCEINCLUDE)
   ENDIF(CMAKE_COMPILER_IS_GNUCXX)
 ENDFUNCTION()
