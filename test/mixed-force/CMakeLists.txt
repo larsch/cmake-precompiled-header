@@ -1,0 +1,8 @@
+cmake_minimum_required(VERSION 2.8)
+project(test-mixed-force)
+include(../../PrecompiledHeader.cmake)
+if(MSVC)
+  set(pch_source test-pch.c test-pch.cpp)
+endif()
+add_library(test-mixed-force test-mixed-force.c test-mixed-force.cpp test-pch.h ${pch_source})
+add_precompiled_header(test-mixed-force test-pch.h FORCEINCLUDE)

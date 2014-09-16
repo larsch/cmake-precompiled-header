@@ -1,0 +1,8 @@
+cmake_minimum_required(VERSION 2.8)
+project(test-c)
+include(../../PrecompiledHeader.cmake)
+if(MSVC)
+  set(pch_source test-pch.c)
+endif()
+add_library(test-c test-c.c test-pch.h ${pch_source})
+add_precompiled_header(test-c test-pch.h)
