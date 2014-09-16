@@ -1,7 +1,6 @@
 @echo off
 setlocal enableextensions enabledelayedexpansion
-set PATH=c:\appl\MinGW\bin;C:\Program Files (x86)\CMake 2.8\bin
-call "%VS100COMNTOOLS%\vsvars32.bat"
+set PATH=%SystemRoot%\System32;c:\appl\MinGW\bin;C:\Program Files (x86)\CMake 2.8\bin
 
 set buildroot=%~dp0build
 pushd test
@@ -22,12 +21,15 @@ goto :eof
 set test=%~1
 set testdir=%~dp0test/%test%
 set generator=%~2
-set build=%buildroot%\%test%\%generator%
-echo "%build%"
+set source=%buildroot%\%test%-%generator%-src
+set build=%buildroot%\%test%-%generator%-build
 if exist "%build%" rmdir /q/s "%build%"
+if exist "%source%" rmdir /q/s "%source%"
+mkdir "%source%"
+xcopy /S "%testdir%" "%source%"
 mkdir "%build%"
 pushd "%build%"
-cmake -G "%generator%" "%testdir%"
+cmake -G "%generator%" "%source%"
 if errorlevel 1 goto :eof
 cmake --build .
 if errorlevel 1 goto :eof
