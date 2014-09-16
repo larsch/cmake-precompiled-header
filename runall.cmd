@@ -19,7 +19,7 @@ goto :eof
 
 :runtest2
 set test=%~1
-set testdir=%~dp0test/%test%
+set testdir=%~dp0test\%test%
 set generator=%~2
 set source=%buildroot%\%test%-%generator%-src
 set build=%buildroot%\%test%-%generator%-build
@@ -32,5 +32,7 @@ pushd "%build%"
 cmake -G "%generator%" "%source%"
 if errorlevel 1 goto :eof
 cmake --build .
+if errorlevel 1 goto :eof
+ctest
 if errorlevel 1 goto :eof
 popd
