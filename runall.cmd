@@ -26,13 +26,25 @@ set build=%buildroot%\%test%-%generator%-build
 if exist "%build%" rmdir /q/s "%build%"
 if exist "%source%" rmdir /q/s "%source%"
 mkdir "%source%"
-xcopy /S "%testdir%" "%source%"
+xcopy /Q/S "%testdir%" "%source%"
 mkdir "%build%"
 pushd "%build%"
 cmake -G "%generator%" "%source%"
 if errorlevel 1 goto :eof
+
 cmake --build .
 if errorlevel 1 goto :eof
+set EXPECTED_PCH=1
 ctest
 if errorlevel 1 goto :eof
+
+timeout /T 2 /NOBREAK
+echo #undef PCH >> "%source%\test-pch.h"
+echo #define PCH 2 >> "%source%\test-pch.h"
+cmake --build .
+if errorlevel 1 goto :eof
+set EXPECTED_PCH=2
+ctest
+if errorlevel 1 goto :eof
+
 popd
