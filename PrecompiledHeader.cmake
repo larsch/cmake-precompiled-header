@@ -63,6 +63,18 @@ macro(combine_arguments _variable)
   set(${_variable} "${_result}")
 endmacro()
 
+function(export_all_flags _filename)
+  set(_include_directories "$<TARGET_PROPERTY:${_target},INCLUDE_DIRECTORIES>")
+  set(_compile_definitions "$<TARGET_PROPERTY:${_target},COMPILE_DEFINITIONS>")
+  set(_compile_flags "$<TARGET_PROPERTY:${_target},COMPILE_FLAGS>")
+  set(_compile_options "$<TARGET_PROPERTY:${_target},COMPILE_OPTIONS>")
+  set(_include_directories "$<$<BOOL:${_include_directories}>:-I$<JOIN:${_include_directories},\n-I>\n>")
+  set(_compile_definitions "$<$<BOOL:${_compile_definitions}>:-D$<JOIN:${_compile_definitions},\n-D>\n>")
+  set(_compile_flags "$<$<BOOL:${_compile_flags}>:$<JOIN:${_compile_flags},\n>\n>")
+  set(_compile_options "$<$<BOOL:${_compile_options}>:$<JOIN:${_compile_options},\n>\n>")
+  file(GENERATE OUTPUT "${_filename}" CONTENT "${_compile_definitions}${_include_directories}${_compile_flags}${_compile_options}\n")
+endfunction()
+
 function(add_precompiled_header _target _input)
   cmake_parse_arguments(_PCH "FORCEINCLUDE" "SOURCE_CXX:SOURCE_C" "" ${ARGN})
 
@@ -153,16 +165,7 @@ function(add_precompiled_header _target _input)
     set(_output_c "${_outdir}/.c")
 
     set(_pch_flags_file "${_pch_binary_dir}/compile_flags.rsp")
-    set(_include_directories "$<TARGET_PROPERTY:${_target},INCLUDE_DIRECTORIES>")
-    set(_compile_definitions "$<TARGET_PROPERTY:${_target},COMPILE_DEFINITIONS>")
-    set(_compile_flags "$<TARGET_PROPERTY:${_target},COMPILE_FLAGS>")
-    set(_compile_options "$<TARGET_PROPERTY:${_target},COMPILE_OPTIONS>")
-    set(_include_directories "$<$<BOOL:${_include_directories}>:-I$<JOIN:${_include_directories},\n-I>\n>")
-    set(_compile_definitions "$<$<BOOL:${_compile_definitions}>:-D$<JOIN:${_compile_definitions},\n-D>\n>")
-    set(_compile_flags "$<$<BOOL:${_compile_flags}>:$<JOIN:${_compile_flags},\n>\n>")
-    set(_compile_options "$<$<BOOL:${_compile_options}>:$<JOIN:${_compile_options},\n>\n>")
-    file(GENERATE OUTPUT "${_pch_flags_file}" CONTENT "${_compile_definitions}${_include_directories}${_compile_flags}${_compile_options}\n")
-
+    export_all_flags("${_pch_flags_file}")
     set(_compiler_FLAGS "@${_pch_flags_file}")
     add_custom_command(
       OUTPUT "${_pchfile}"
