@@ -30,7 +30,7 @@
 #
 # License:
 #
-# Copyright (C) 2009-2013 Lars Christensen <larsch@belunktum.dk>
+# Copyright (C) 2009-2017 Lars Christensen <larsch@belunktum.dk>
 #
 # Permission is hereby granted, free of charge, to any person
 # obtaining a copy of this software and associated documentation files
@@ -76,7 +76,7 @@ function(export_all_flags _filename)
 endfunction()
 
 function(add_precompiled_header _target _input)
-  cmake_parse_arguments(_PCH "FORCEINCLUDE" "SOURCE_CXX:SOURCE_C" "" ${ARGN})
+  cmake_parse_arguments(_PCH "FORCEINCLUDE" "SOURCE_CXX;SOURCE_C" "" ${ARGN})
 
   get_filename_component(_input_we ${_input} NAME_WE)
   if(NOT _PCH_SOURCE_CXX)
@@ -90,8 +90,8 @@ function(add_precompiled_header _target _input)
 
     set(_cxx_path "${CMAKE_CFG_INTDIR}/${_target}_cxx_pch")
     set(_c_path "${CMAKE_CFG_INTDIR}/${_target}_c_pch")
-    make_directory("${_cxx_path}")
-    make_directory("${_c_path}")
+    file(MAKE_DIRECTORY "${_cxx_path}")
+    file(MAKE_DIRECTORY "${_c_path}")
     set(_pch_cxx_header "${_cxx_path}/${_input}")
     set(_pch_cxx_pch "${_cxx_path}/${_input_we}.pch")
     set(_pch_c_header "${_c_path}/${_input}")
@@ -164,7 +164,7 @@ function(add_precompiled_header _target _input)
     set(_pch_binary_dir "${CMAKE_CURRENT_BINARY_DIR}/${_target}_pch")
     set(_pchfile "${_pch_binary_dir}/${_input}")
     set(_outdir "${CMAKE_CURRENT_BINARY_DIR}/${_target}_pch/${_name}.gch")
-    make_directory(${_outdir})
+    file(MAKE_DIRECTORY "${_outdir}")
     set(_output_cxx "${_outdir}/.c++")
     set(_output_c "${_outdir}/.c")
 
