@@ -5,10 +5,19 @@ set buildroot=%~dp0build
 
 call :runtest %1 "Visual Studio 14 2015"
 if errorlevel 1 exit /b 1
+
 call :runtest %1 "MinGW Makefiles"
 if errorlevel 1 exit /b 1
+
 call :runtest %1 "Ninja"
 if errorlevel 1 exit /b 1
+
+setlocal
+call "%VS140COMNTOOLS%\vsvars32.bat"
+call :runtest %1 "NMake Makefiles"
+if errorlevel 1 exit /b 1
+endlocal
+
 goto :eof
 
 :runtest
