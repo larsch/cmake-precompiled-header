@@ -1,3 +1,5 @@
 vs2010/
 mingw/
 build/
+example-*/
+*.orig

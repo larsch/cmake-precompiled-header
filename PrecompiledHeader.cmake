@@ -87,13 +87,8 @@ function(add_precompiled_header _target _input)
   endif()
 
   if(MSVC)
-
-    set(_cxx_path "${CMAKE_CFG_INTDIR}/${_target}_cxx_pch")
-    set(_c_path "${CMAKE_CFG_INTDIR}/${_target}_c_pch")
-    set(_pch_cxx_header "${_cxx_path}/${_input}")
-    set(_pch_cxx_pch "${_cxx_path}/${_input_we}.pch")
-    set(_pch_c_header "${_c_path}/${_input}")
-    set(_pch_c_pch "${_c_path}/${_input_we}.pch")
+    set(_pch_cxx_pch "${CMAKE_CFG_INTDIR}/cxx_${_input_we}.pch")
+    set(_pch_c_pch "${CMAKE_CFG_INTDIR}/c_${_input_we}.pch")
 
     get_target_property(sources ${_target} SOURCES)
     foreach(_source ${sources})
@@ -135,11 +130,7 @@ function(add_precompiled_header _target _input)
           set(_object_depends)
         endif()
         if(_PCH_FORCEINCLUDE)
-          if(_source MATCHES \\.\(cc|cxx|cpp\)$)
-            list(APPEND _object_depends "${_pch_header}")
-          else()
-            list(APPEND _object_depends "${_pch_header}")
-          endif()
+          list(APPEND _object_depends "${CMAKE_CURRENT_SOURCE_DIR}/${_pch_header}")
         endif()
 
         set_source_files_properties(${_source} PROPERTIES

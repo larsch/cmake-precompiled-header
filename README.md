@@ -3,9 +3,12 @@
 Precompiled header setup for CMake. Supported CMake generators:
 
   * Visual Studio
+  * NMake Makefiles
   * Unix Makefiles (GCC)
+  * MinGW Makefiles
+  * MSYS Makefiles
   * Ninja
-  
+
 # Usage
 
 Create a `pchheader.{c,cpp}` and `pchheader.h` and add then to the CMake target:
