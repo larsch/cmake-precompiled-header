@@ -1,6 +1,6 @@
 @echo off
 setlocal enableextensions enabledelayedexpansion
-set PATH=%SystemRoot%\System32;c:\appl\MinGW\bin;C:\Program Files (x86)\CMake\bin;c:\appl\tools\bin
+set PATH=%SystemRoot%\System32;c:\appl\MinGW\bin;C:\Program Files\CMake\bin;c:\appl\tools\bin
 set buildroot=%~dp0build
 
 call :runtest %1 "Visual Studio 14 2015"
