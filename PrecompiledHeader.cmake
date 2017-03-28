@@ -90,8 +90,6 @@ function(add_precompiled_header _target _input)
 
     set(_cxx_path "${CMAKE_CFG_INTDIR}/${_target}_cxx_pch")
     set(_c_path "${CMAKE_CFG_INTDIR}/${_target}_c_pch")
-    file(MAKE_DIRECTORY "${_cxx_path}")
-    file(MAKE_DIRECTORY "${_c_path}")
     set(_pch_cxx_header "${_cxx_path}/${_input}")
     set(_pch_cxx_pch "${_cxx_path}/${_input_we}.pch")
     set(_pch_c_header "${_c_path}/${_input}")
