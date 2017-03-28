@@ -1,0 +1,5 @@
+cmake_minimum_required(VERSION 3.7.2)
+include(../PrecompiledHeader.cmake)
+project(example)
+add_executable(example main.cpp pch.cpp)
+add_precompiled_header(example pch.h FORCEINCLUDE)
